@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import './Home.css';
 import HandShootShooter from '../components/HandShootShooter';
 import BackgroundRemover from '../components/BackgroundRemover';
+import SmartInventoryAI from '../components/Smartinventoryai';
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState({});
@@ -85,9 +86,9 @@ const Home = () => {
     },
       {
       icon: '🎨',
-      title: 'AI Background Remover',
-      description: 'Apply AI-powered Background Remover',
-      component: <BackgroundRemover />,
+      title: 'AI Inventory Management',
+      description: 'Inventory Management',
+      component: <SmartInventoryAI />,
       category: 'ai'
     },
     {
