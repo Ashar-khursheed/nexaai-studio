@@ -159,19 +159,31 @@
     transform: translateY(-30px) rotate(10deg);
   }
 }
-
 /* Stats Section */
-.stats-section {
+.stats-section-home {
   position: relative;
   z-index: 1;
   padding: 4rem 0;
   background: linear-gradient(180deg, transparent, rgba(99, 102, 241, 0.05), transparent);
 }
 
+
+
+.stats-section-home .container {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 0 2rem;
+  margin: 0;
+  display: block; /* important */
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
+  width: 100%;
+  justify-items: stretch; /* FORCE FULL WIDTH */
+  align-items: stretch;
 }
 
 @media (max-width: 1024px) {
@@ -188,6 +200,7 @@
 }
 
 .stat-card {
+  width: 100%; /* this makes each card fill its grid cell */
   text-align: center;
   padding: 2rem;
   background: rgba(99, 102, 241, 0.05);
@@ -211,6 +224,8 @@
   color: var(--gray);
   font-size: 1rem;
 }
+
+
 
 /* Services Section */
 .services-section,

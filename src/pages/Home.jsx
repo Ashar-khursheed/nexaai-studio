@@ -233,7 +233,7 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="stats-section">
+      <section className="stats-section-home">
         <div className="container">
           <div className="stats-grid">
             {stats.map((stat, index) => (
