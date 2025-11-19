@@ -84,13 +84,13 @@ const Home = () => {
       component: <HandShootShooter />,
       category: 'ai'
     },
-      {
-      icon: '🎨',
-      title: 'AI Inventory Management',
-      description: 'Inventory Management',
-      component: <SmartInventoryAI />,
-      category: 'ai'
-    },
+    //   {
+    //   icon: '🎨',
+    //   title: 'AI Inventory Management',
+    //   description: 'Inventory Management',
+    //   component: <SmartInventoryAI />,
+    //   category: 'ai'
+    // },
     {
       icon: '🎨',
       title: 'AI Image Editor',
