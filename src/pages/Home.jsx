@@ -139,27 +139,27 @@ const Home = () => {
       component: <LoremGenerator />,
       category: 'utility'
     },
-    {
-      icon: '📋',
-      title: 'Markdown Converter',
-      description: 'Convert Markdown to HTML and preview in real-time',
-      component: <MarkdownConverter />,
-      category: 'utility'
-    },
-    {
-      icon: '🖼️',
-      title: 'Image Color Extractor',
-      description: 'Extract color palettes from your images',
-      component: <ImageColorExtractor />,
-      category: 'utility'
-    },
-    {
-      icon: '{ }',
-      title: 'JSON Formatter',
-      description: 'Format, validate and beautify JSON data',
-      component: <JSONFormatter />,
-      category: 'utility'
-    }
+    // {
+    //   icon: '📋',
+    //   title: 'Markdown Converter',
+    //   description: 'Convert Markdown to HTML and preview in real-time',
+    //   component: <MarkdownConverter />,
+    //   category: 'utility'
+    // },
+    // {
+    //   icon: '🖼️',
+    //   title: 'Image Color Extractor',
+    //   description: 'Extract color palettes from your images',
+    //   component: <ImageColorExtractor />,
+    //   category: 'utility'
+    // },
+    // {
+    //   icon: '{ }',
+    //   title: 'JSON Formatter',
+    //   description: 'Format, validate and beautify JSON data',
+    //   component: <JSONFormatter />,
+    //   category: 'utility'
+    // }
   ];
 
   const services = [
