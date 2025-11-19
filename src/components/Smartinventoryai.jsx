@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './SmartInventoryAI.css';
+// import './SmartInventoryAI.css';
 
 const SmartInventoryAI = () => {
   const [inventory, setInventory] = useState([]);
