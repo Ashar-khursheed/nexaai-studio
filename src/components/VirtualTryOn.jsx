@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import './VirtualTryOn.css';
-
+import { FaceMesh } from '@mediapipe/face_mesh';
+import { Camera } from '@mediapipe/camera_utils';
 
 const VirtualTryOn = () => {
   const videoRef = useRef(null);
@@ -49,48 +50,42 @@ const VirtualTryOn = () => {
     }
   }, [cameraActive]);
 
-  const initFaceDetection = async () => {
-    try {
-      const FaceMeshModule = await import('@mediapipe/face_mesh');
-      const CameraModule = await import('@mediapipe/camera_utils');
+  
 
-      const FaceMesh = FaceMeshModule.default; // <- crucial fix
-      const Camera = CameraModule.Camera;
+   const initFaceDetection = () => {
 
-      const faceMesh = new FaceMesh({
-        locateFile: (file) => `/mediapipe/face_mesh/${file}`,
-      });
+    const faceMesh = new FaceMesh({
+    locateFile: (file) =>
+      `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`, // optional fallback
+  });
 
-      faceMesh.setOptions({
-        maxNumFaces: 1,
-        refineLandmarks: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-      });
+    faceMesh.setOptions({
+      maxNumFaces: 1,
+      refineLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
 
-      faceMesh.onResults((results) => {
-        if (results.multiFaceLandmarks?.length) {
-          faceDataRef.current = results.multiFaceLandmarks[0];
-        }
-        drawFrame();
-      });
-
-      if (videoRef.current) {
-        const camera = new Camera(videoRef.current, {
-          onFrame: async () => {
-            await faceMesh.send({ image: videoRef.current });
-          },
-          width: 1280,
-          height: 720,
-        });
-
-        await camera.start();
+    faceMesh.onResults((results) => {
+      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+        faceDataRef.current = results.multiFaceLandmarks[0];
       }
-    } catch (err) {
-      console.error('FaceMesh init failed:', err);
+      drawFrame();
+    });
+
+    if (videoRef.current) {
+      const camera = new Camera(videoRef.current, {
+        onFrame: async () => {
+          if (videoRef.current && cameraActiveRef.current) {
+            await faceMesh.send({ image: videoRef.current });
+          }
+        },
+        width: 1280,
+        height: 720,
+      });
+      camera.start();
     }
   };
-
 
   const stopCamera = () => {
     if (streamRef.current) {
