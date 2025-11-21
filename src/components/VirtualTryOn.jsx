@@ -50,43 +50,46 @@ const VirtualTryOn = () => {
   }, [cameraActive]);
 
   const initFaceDetection = async () => {
-  try {
-    const { FaceMesh } = await import('@mediapipe/face_mesh');
-    const { Camera } = await import('@mediapipe/camera_utils');
+    try {
+      const FaceMeshModule = await import('@mediapipe/face_mesh');
+      const CameraModule = await import('@mediapipe/camera_utils');
 
-    const faceMesh = new FaceMesh({
-      locateFile: (file) => `/mediapipe/face_mesh/${file}`,
-    });
+      const FaceMesh = FaceMeshModule.default; // <- crucial fix
+      const Camera = CameraModule.Camera;
 
-    faceMesh.setOptions({
-      maxNumFaces: 1,
-      refineLandmarks: true,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5,
-    });
-
-    faceMesh.onResults((results) => {
-      if (results.multiFaceLandmarks?.length) {
-        faceDataRef.current = results.multiFaceLandmarks[0];
-      }
-      drawFrame();
-    });
-
-    if (videoRef.current) {
-      const camera = new Camera(videoRef.current, {
-        onFrame: async () => {
-          await faceMesh.send({ image: videoRef.current });
-        },
-        width: 1280,
-        height: 720,
+      const faceMesh = new FaceMesh({
+        locateFile: (file) => `/mediapipe/face_mesh/${file}`,
       });
 
-      await camera.start();
+      faceMesh.setOptions({
+        maxNumFaces: 1,
+        refineLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
+
+      faceMesh.onResults((results) => {
+        if (results.multiFaceLandmarks?.length) {
+          faceDataRef.current = results.multiFaceLandmarks[0];
+        }
+        drawFrame();
+      });
+
+      if (videoRef.current) {
+        const camera = new Camera(videoRef.current, {
+          onFrame: async () => {
+            await faceMesh.send({ image: videoRef.current });
+          },
+          width: 1280,
+          height: 720,
+        });
+
+        await camera.start();
+      }
+    } catch (err) {
+      console.error('FaceMesh init failed:', err);
     }
-  } catch (err) {
-    console.error('FaceMesh init failed:', err);
-  }
-};
+  };
 
 
   const stopCamera = () => {
