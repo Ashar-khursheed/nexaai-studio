@@ -50,10 +50,12 @@ const VirtualTryOn = () => {
     }
   }, [cameraActive]);
 
-  const initFaceDetection = () => {
+   const initFaceDetection = () => {
+
     const faceMesh = new FaceMesh({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
-    });
+    locateFile: (file) =>
+      `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`, // optional fallback
+  });
 
     faceMesh.setOptions({
       maxNumFaces: 1,
