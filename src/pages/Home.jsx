@@ -20,6 +20,7 @@ import './Home.css';
 import HandShootShooter from '../components/HandShootShooter';
 import BackgroundRemover from '../components/BackgroundRemover';
 import SmartInventoryAI from '../components/Smartinventoryai';
+import NexaAIMascot from '../components/NexaAIMascot';
 
 const Home = () => {
   const [isVisible, setIsVisible] = useState({});
@@ -84,13 +85,13 @@ const Home = () => {
       component: <HandShootShooter />,
       category: 'ai'
     },
-    //   {
-    //   icon: '🎨',
-    //   title: 'AI Inventory Management',
-    //   description: 'Inventory Management',
-    //   component: <SmartInventoryAI />,
-    //   category: 'ai'
-    // },
+      {
+      icon: '🎨',
+      title: 'AI Background Remover',
+      description: 'BackgroundRemover',
+      component: <BackgroundRemover />,
+      category: 'ai'
+    },
     {
       icon: '🎨',
       title: 'AI Image Editor',
@@ -202,6 +203,7 @@ const Home = () => {
     <div className="home">
       <ThreeBackground />
       <Navigation />
+      <NexaAIMascot />
 
       {/* Hero Section */}
       <section className="hero">

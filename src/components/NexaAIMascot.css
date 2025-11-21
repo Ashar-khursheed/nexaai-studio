@@ -1,0 +1,220 @@
+.nexa-mascot {
+  position: fixed;
+  z-index: 9999;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.nexa-mascot.mascot-right-bottom {
+  bottom: 10%;
+  right: 20px;
+}
+
+.nexa-mascot.mascot-left-bottom {
+    bottom: 10%;
+  left: 20px;
+}
+
+.nexa-mascot.mascot-right-top {
+  top: 180px;
+  right: 20px;
+}
+
+.nexa-mascot.mascot-left-top {
+    top: 180px;
+  left: 20px;
+}
+
+.mascot-container {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(236, 72, 153, 0.1));
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 10px;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3), 0 0 20px rgba(236, 72, 153, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.mascot-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 48px rgba(59, 130, 246, 0.4), 0 0 30px rgba(236, 72, 153, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.mascot-canvas {
+  width: 200px;
+  height: 200px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.mascot-canvas canvas {
+  display: block;
+}
+
+.nexa-mascot.expanded .mascot-container {
+  padding-bottom: 0;
+}
+
+.mascot-bubble {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  min-width: 250px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: bubbleAppear 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.mascot-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #8b5cf6;
+}
+
+.mascot-bubble p {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.mascot-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mascot-actions button {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.mascot-actions button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.position-controls {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  background: rgba(30, 41, 59, 0.95);
+  padding: 8px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.nexa-mascot:hover .position-controls {
+  opacity: 1;
+}
+
+.pos-btn {
+  width: 32px;
+  height: 32px;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pos-btn:hover {
+  background: rgba(59, 130, 246, 0.4);
+  transform: scale(1.1);
+}
+
+@keyframes bubbleAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .nexa-mascot {
+    bottom: 10px !important;
+    right: 10px !important;
+    left: auto !important;
+    top: auto !important;
+  }
+
+  .nexa-mascot.mascot-left-bottom,
+  .nexa-mascot.mascot-left-top {
+    left: auto !important;
+    right: 10px;
+     display: none;
+  }
+
+  .nexa-mascot.mascot-right-top {
+    top: auto !important;
+    bottom: 10px;
+  }
+
+  .mascot-canvas {
+    width: 120px;
+    height: 120px;
+  }
+
+  .mascot-bubble {
+    min-width: 200px;
+    font-size: 12px;
+    padding: 12px 15px;
+  }
+
+  .position-controls {
+    bottom: -45px;
+  }
+
+  .pos-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mascot-canvas {
+    width: 100px;
+    height: 100px;
+  }
+
+  .mascot-bubble {
+    min-width: 180px;
+  }
+}

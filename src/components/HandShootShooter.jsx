@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import "./EyeBlinkShooter.css"; // you can rename to HandShootShooter.css
-
+import "./EyeBlinkShooter.css";
 import { Hands } from "@mediapipe/hands";
 import { Camera } from "@mediapipe/camera_utils";
 
@@ -13,6 +12,7 @@ const HandShootShooter = () => {
   const [targets, setTargets] = useState([]);
   const [shooting, setShooting] = useState(false);
   const [gameTime, setGameTime] = useState(30);
+  const shootingRef = useRef(false);
 
   const shootTarget = () => {
     setTargets((prev) => {
@@ -51,56 +51,89 @@ const HandShootShooter = () => {
     if (score > highScore) setHighScore(score);
   };
 
-  // Hand detection
+  // Hand detection with proper camera initialization
   useEffect(() => {
     if (!gameActive) return;
+    
+    let cameraInstance = null;
+    let handsInstance = null;
 
-    const hands = new Hands({
-      locateFile: (file) =>
-        `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
-    });
+    const initCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: 640, height: 480 }
+        });
 
-    hands.setOptions({
-      maxNumHands: 1,
-      modelComplexity: 1,
-      minDetectionConfidence: 0.7,
-      minTrackingConfidence: 0.7,
-    });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          
+          videoRef.current.onloadedmetadata = async () => {
+            await videoRef.current.play();
 
-    hands.onResults((results) => {
-      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-        const landmarks = results.multiHandLandmarks[0];
+            handsInstance = new Hands({
+              locateFile: (file) =>
+                `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+            });
 
-        const indexTip = landmarks[8];
-        const middleTip = landmarks[12];
-        const wrist = landmarks[0];
+            handsInstance.setOptions({
+              maxNumHands: 1,
+              modelComplexity: 1,
+              minDetectionConfidence: 0.7,
+              minTrackingConfidence: 0.7,
+            });
 
-        // simple gun gesture: index above middle & hand facing camera
-        if (indexTip.y < middleTip.y && wrist.z < 0) {
-          if (!shooting) {
-            shootTarget();
-            setShooting(true);
-            setTimeout(() => setShooting(false), 300);
-          }
+            handsInstance.onResults((results) => {
+              if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const landmarks = results.multiHandLandmarks[0];
+                const indexTip = landmarks[8];
+                const middleTip = landmarks[12];
+                const wrist = landmarks[0];
+
+                if (indexTip.y < middleTip.y && Math.abs(wrist.z) < 0.1) {
+                  if (!shootingRef.current) {
+                    shootTarget();
+                    setShooting(true);
+                    shootingRef.current = true;
+                    setTimeout(() => {
+                      setShooting(false);
+                      shootingRef.current = false;
+                    }, 500);
+                  }
+                }
+              }
+            });
+
+            cameraInstance = new Camera(videoRef.current, {
+              onFrame: async () => {
+                if (videoRef.current && handsInstance) {
+                  await handsInstance.send({ image: videoRef.current });
+                }
+              },
+              width: 640,
+              height: 480,
+            });
+            cameraInstance.start();
+          };
         }
+      } catch (err) {
+        console.error('Camera error:', err);
+        alert('Camera access denied. Please allow camera and try again.');
+        setGameActive(false);
       }
-    });
+    };
 
-    if (videoRef.current) {
-      const camera = new Camera(videoRef.current, {
-        onFrame: async () => await hands.send({ image: videoRef.current }),
-        width: 640,
-        height: 480,
-      });
-      camera.start();
-    }
+    initCamera();
 
     return () => {
-      hands.close();
+      if (cameraInstance) cameraInstance.stop();
+      if (handsInstance) handsInstance.close();
+      if (videoRef.current?.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+      }
     };
-  }, [gameActive, shooting]);
+  }, [gameActive]);
 
-  // Target generation & timer
   useEffect(() => {
     if (!gameActive) return;
     const targetInterval = setInterval(generateTarget, 2000);
@@ -145,6 +178,7 @@ const HandShootShooter = () => {
             <div className="menu-content">
               <h2>🤚 Hand Shooter</h2>
               <p>Make a gun gesture to shoot targets!</p>
+              <p style={{ fontSize: '0.9em', opacity: 0.8 }}>Point index finger up, others down</p>
               <button onClick={startGame} className="start-game-btn">
                 🎮 Start Game
               </button>
@@ -160,6 +194,7 @@ const HandShootShooter = () => {
               className="game-video"
               style={{
                 width: "100%",
+                maxHeight: "70vh",
                 background: "black",
                 objectFit: "cover",
               }}
