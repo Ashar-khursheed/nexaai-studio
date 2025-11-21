@@ -53,9 +53,8 @@ const VirtualTryOn = () => {
    const initFaceDetection = () => {
 
     const faceMesh = new FaceMesh({
-    locateFile: (file) =>
-      `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`, // optional fallback
-  });
+      locateFile: (file) => `/mediapipe/face_mesh/${file}`,
+    });
 
     faceMesh.setOptions({
       maxNumFaces: 1,
