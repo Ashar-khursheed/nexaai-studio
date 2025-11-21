@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import './VirtualTryOn.css';
-import { FaceMesh } from '@mediapipe/face_mesh';
-import { Camera } from '@mediapipe/camera_utils';
+
 
 const VirtualTryOn = () => {
   const videoRef = useRef(null);
@@ -50,7 +49,10 @@ const VirtualTryOn = () => {
     }
   }, [cameraActive]);
 
-   const initFaceDetection = () => {
+  const initFaceDetection = async () => {
+  try {
+    const { FaceMesh } = await import('@mediapipe/face_mesh');
+    const { Camera } = await import('@mediapipe/camera_utils');
 
     const faceMesh = new FaceMesh({
       locateFile: (file) => `/mediapipe/face_mesh/${file}`,
@@ -64,7 +66,7 @@ const VirtualTryOn = () => {
     });
 
     faceMesh.onResults((results) => {
-      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+      if (results.multiFaceLandmarks?.length) {
         faceDataRef.current = results.multiFaceLandmarks[0];
       }
       drawFrame();
@@ -73,16 +75,19 @@ const VirtualTryOn = () => {
     if (videoRef.current) {
       const camera = new Camera(videoRef.current, {
         onFrame: async () => {
-          if (videoRef.current && cameraActiveRef.current) {
-            await faceMesh.send({ image: videoRef.current });
-          }
+          await faceMesh.send({ image: videoRef.current });
         },
         width: 1280,
         height: 720,
       });
-      camera.start();
+
+      await camera.start();
     }
-  };
+  } catch (err) {
+    console.error('FaceMesh init failed:', err);
+  }
+};
+
 
   const stopCamera = () => {
     if (streamRef.current) {
